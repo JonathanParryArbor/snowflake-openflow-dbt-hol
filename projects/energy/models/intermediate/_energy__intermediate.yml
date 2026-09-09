@@ -1,0 +1,70 @@
+version: 2
+
+models:
+
+  # ==========================================================================
+  - name: int_energy_price_volatility
+    description: >
+      Annual commodity price volatility statistics calculated from observed
+      daily settlement prices. One row per commodity and calendar year.
+    columns:
+
+      - name: calendar_year
+        description: Calendar year containing the observed settlement prices.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 2000
+                inclusive: true
+
+      - name: commodity_code
+        description: Machine-readable commodity code, for example brent_crude.
+        data_tests:
+          - not_null
+
+      - name: commodity_name
+        description: Human-readable commodity name, for example Brent crude.
+
+      - name: commodity_group
+        description: Energy, Metals, Grains and softs, or Livestock.
+
+      - name: price_unit
+        description: Unit in which the commodity's settlement price is quoted.
+
+      - name: is_energy_complex
+        description: True for the six commodities in the energy complex.
+
+      - name: average_price_usd
+        description: Average observed settlement price during the calendar year.
+        data_tests:
+          - not_null
+
+      - name: price_standard_deviation_usd
+        description: >
+          Sample standard deviation of observed settlement prices during the
+          calendar year, expressed in the commodity's quoted price unit.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+
+      - name: coefficient_of_variation
+        description: >
+          Price standard deviation divided by average price. This normalises
+          volatility for comparison across commodities with different prices.
+        data_tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 0
+                inclusive: true
+
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - calendar_year
+              - commodity_code

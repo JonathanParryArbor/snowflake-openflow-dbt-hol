@@ -352,6 +352,12 @@ models:
         type: simple
         agg: count
         expr: maintenance_log_id
+      - name: equipment_count
+        label: Equipment count
+        description: Distinct pieces of equipment with maintenance events.
+        type: simple
+        agg: count_distinct
+        expr: equipment_id
       - name: completed_event_count
         label: Completed event count
         description: Maintenance events marked Completed.
@@ -407,6 +413,17 @@ models:
         input_metrics:
           - name: total_maintenance_cost
           - name: total_downtime_hours
+      - name: maintenance_cost_per_equipment
+        label: Maintenance cost per equipment
+        description: >
+          Total maintenance cost divided by the distinct pieces of equipment
+          with maintenance events in the selected period.
+        type: derived
+        expr: total_maintenance_cost / nullif(equipment_count, 0)
+        input_metrics:
+          - name: total_maintenance_cost
+          - name: equipment_count
+
 
 
   # ===========================================================================
