@@ -25,11 +25,11 @@ models:
         data_tests:
           - not_null
 
-      # HOL_BUG_ENERGY_04
         dimension:
           type: time
         granularity: day
-      - name: commodity
+
+      - name: commodity_code
         data_type: varchar
         description: Machine-readable commodity code, for example brent_crude.
 
@@ -228,11 +228,11 @@ models:
       - name: maintenance_status
         data_type: varchar
         description: Lifecycle state of the maintenance event.
-        # HOL_BUG_ENERGY_03
         data_tests:
           - accepted_values:
               arguments:
-                values: ['Completed', 'In Progress', 'Scheduled', 'Delayed']
+                values: ['Completed', 'In Progress', 'Scheduled', 'Delayed', 'Cancelled']
+
 
         dimension:
           type: categorical
